@@ -9,27 +9,27 @@ from gtts import gTTS
 import os
 import pywhatkit
 
-# Constants & API keys
+
 NEWS_API_KEY = ""
 WEATHER_API_KEY = ""
 GEMINI_API_KEY = ""
 
-# Flags
+
 stop_reading_news = False
 assistant_active = True
 
-# Initialize speech engine and recognizer
+
 recogniser = sr.Recognizer()
 engine = pyttsx3.init()
 
-# Configure Gemini API
+
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-pro")
 
-# ---------- Speech Functions ----------
+
 
 def speak(text):
-    print("Jarvis:", text)  # ✅ Show text output
+    print("Jarvis:", text)  
     tts = gTTS(text)
     tts.save('temp.mp3')
     pygame.mixer.init()
@@ -42,14 +42,13 @@ def speak(text):
     pygame.mixer.music.unload()
     os.remove('temp.mp3')
 
-# ---------- AI Processing ----------
 
 def aiProcess(command):
     try:
         response = model.generate_content(
             f"You are Jarvis, a helpful assistant created by Tony Stark. Be brief and informative.\nUser: {command}"
         )
-        # Fix Gemini error by getting proper text part
+
         parts = response.parts
         if parts:
             return parts[0].text
@@ -58,7 +57,6 @@ def aiProcess(command):
     except Exception as e:
         return f"Sorry, Gemini model failed: {e}"
 
-# ---------- Weather ----------
 
 def get_weather_report():
     url = f"http://api.openweathermap.org/data/2.5/weather?q=Karnataka,in&units=metric&appid={WEATHER_API_KEY}"
@@ -74,7 +72,7 @@ def get_weather_report():
     except Exception as e:
         return f"Weather API failed: {e}"
 
-# ---------- Main Command Handler ----------
+
 
 def processCommand(c):
     global stop_reading_news, assistant_active
@@ -136,7 +134,7 @@ def processCommand(c):
         output = aiProcess(c)
         speak(output)
 
-# ---------- Stop Listening ----------
+
 
 def listen_for_stop():
     global stop_reading_news
@@ -152,7 +150,7 @@ def listen_for_stop():
             pass
     return False
 
-# ---------- Main Program Loop ----------
+
 
 if __name__ == "__main__":
     speak("Initializing Jarvis...")
